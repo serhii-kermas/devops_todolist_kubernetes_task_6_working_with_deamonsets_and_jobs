@@ -1,524 +1,517 @@
-kubectl apply -f namespace.yml
-kubectl apply -f clusterIp.yml
-kubectl apply -f deployment.yml
 kubectl apply -f daemonset.yml
 kubectl apply -f cronjob.yml
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <!-- Basic Page Needs
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <meta charset="utf-8">
-  <title>Djodolist</title>
-  <meta name="description" content="Small todolist app.">
-  <meta name="author" content="Christian Rotzoll">
-  <!-- Mobile Specific Metas
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <!-- FONT
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link href='http://fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
-  
-  <!-- CSS
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link rel="stylesheet" type='text/css' href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.2/normalize.min.css">;
-  <link rel="stylesheet" type='text/css' href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">;
-  <link rel="stylesheet" type='text/css' href="/static/css/custom.css">
-  
-  <!-- Scripts
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>;
-  <script type="text/javascript" src="/static/js/site.js"></script>
-  
-  <!-- Favicon
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link rel="icon" type="image/png" href="/static/images/favicon.png" />
-</head>
-<body>
-  <!-- Primary Page Layout
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <div class="container">
-    <!-- Navigation
-    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <div class="navbar-spacer"></div>
-    <nav class="navbar">
-      <div class="container">
-        <ul class="navbar-list">
-          <li class="navbar-item"><a class="navbar-link" href="/">Djodolist</a></li>
-          
-          <li class="navbar-item">
-            <a class="navbar-link" href="/auth/login/">Login</a> 
-        </ul>
-      </div>
-    </nav>
-    
-<section class="header">
-  <h2 class="title">Dead simple Todolists.</h2>
-  <div class="row">
-    <div class="three columns value-prop"></div>
-    <div class="six columns">
-      <form action="/todolist/new/" method=post>
-        <input type="hidden" name="csrfmiddlewaretoken" value="CjMpI6Sv3rsrPD4pN51OKCC7VthczRA1lAZT3Q1Dm0mYWDYeGOgmriJPkIco05nZ">
-        <dl>
-          <dd><tr>
-    <th></th>
-    <td>
-      
-      <input type="text" name="description" class="u-full-width" placeholder="Enter your todo" maxlength="128" required id="id_description">
-      
-      
-        
-      
-    </td>
-  </tr>
-          <dt><input type="submit" class="button button-primary" value="Start one now">
-        </dl>
-      </form>
-    </div>
-  </div>
-</section>
-  </div>
-  <!-- End Document
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-</body>
-</html>
+todoapp-daemonset-jdfb5 
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: "2025-08-15T13:08:17Z"
+  generateName: todoapp-daemonset-
+  generation: 1
+  labels:
+    app: todoapp-daemonset
+    controller-revision-hash: 8644898c47
+    pod-template-generation: "2"
+  name: todoapp-daemonset-jdfb5
+  namespace: mateapp
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: DaemonSet
+    name: todoapp-daemonset
+    uid: 65cf45da-1146-4baf-9473-f2f8f997dc2f
+  resourceVersion: "21151"
+  uid: 9209223e-9193-466e-8a07-d53940df8dc2
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchFields:
+          - key: metadata.name
+            operator: In
+            values:
+            - kind-worker2
+  containers:
+  - args:
+    - |
+      while true; do
+        curl -f http://todoapp-svc-cip.mateapp.svc.cluster.local
+        sleep 5
+      done
+    command:
+    - /bin/sh
+    - -c
+    image: ikulyk404/busyboxplus:curl
+    imagePullPolicy: IfNotPresent
+    name: busybox
+    resources:
+      limits:
+        cpu: 200m
+        memory: 256Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-sjrvk
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: kind-worker2
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+  - effect: NoSchedule
+    key: node.kubernetes.io/disk-pressure
+    operator: Exists
+  - effect: NoSchedule
+    key: node.kubernetes.io/memory-pressure
+    operator: Exists
+  - effect: NoSchedule
+    key: node.kubernetes.io/pid-pressure
+    operator: Exists
+  - effect: NoSchedule
+    key: node.kubernetes.io/unschedulable
+    operator: Exists
+  volumes:
+  - name: kube-api-access-sjrvk
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2025-08-15T13:08:18Z"
+    status: "True"
+    type: PodReadyToStartContainers
+  - lastProbeTime: null
+    lastTransitionTime: "2025-08-15T13:08:17Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2025-08-15T13:08:18Z"
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2025-08-15T13:08:18Z"
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2025-08-15T13:08:17Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - allocatedResources:
+      cpu: 100m
+      memory: 128Mi
+    containerID: containerd://45cb22988a025a67da753f4aa62e69493e35a0bd2710c70a15a752ecb5b325e4
+    image: docker.io/ikulyk404/busyboxplus:curl
+    imageID: docker.io/ikulyk404/busyboxplus@sha256:1b6d0ed7d7b591da2782b7f2c4d9afae1552ecc522ec07e2d74c5054b8be4b5e
+    lastState: {}
+    name: busybox
+    ready: true
+    resources:
+      limits:
+        cpu: 200m
+        memory: 256Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2025-08-15T13:08:18Z"
+    user:
+      linux:
+        gid: 0
+        supplementalGroups:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+        - 6
+        - 10
+        - 11
+        - 20
+        - 26
+        - 27
+        uid: 0
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-sjrvk
+      readOnly: true
+      recursiveReadOnly: Disabled
+  hostIP: 172.18.0.3
+  hostIPs:
+  - ip: 172.18.0.3
+  phase: Running
+  podIP: 10.244.2.16
+  podIPs:
+  - ip: 10.244.2.16
+  qosClass: Burstable
+  startTime: "2025-08-15T13:08:17Z"
 
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
-100  3747  100  3747    0     0  18635      0 --:--:-- --:--:-- --:--:-- 37848
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <!-- Basic Page Needs
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <meta charset="utf-8">
-  <title>Djodolist</title>
-  <meta name="description" content="Small todolist app.">
-  <meta name="author" content="Christian Rotzoll">
-  <!-- Mobile Specific Metas
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <!-- FONT
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link href='http://fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
-  
-  <!-- CSS
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link rel="stylesheet" type='text/css' href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.2/normalize.min.css">;
-  <link rel="stylesheet" type='text/css' href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">;
-  <link rel="stylesheet" type='text/css' href="/static/css/custom.css">
-  
-  <!-- Scripts
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>;
-  <script type="text/javascript" src="/static/js/site.js"></script>
-  
-  <!-- Favicon
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link rel="icon" type="image/png" href="/static/images/favicon.png" />
-</head>
-<body>
-  <!-- Primary Page Layout
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <div class="container">
-    <!-- Navigation
-    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <div class="navbar-spacer"></div>
-    <nav class="navbar">
-      <div class="container">
-        <ul class="navbar-list">
-          <li class="navbar-item"><a class="navbar-link" href="/">Djodolist</a></li>
-          
-          <li class="navbar-item">
-            <a class="navbar-link" href="/auth/login/">Login</a> 
-        </ul>
-      </div>
-    </nav>
-    
-<section class="header">
-  <h2 class="title">Dead simple Todolists.</h2>
-  <div class="row">
-    <div class="three columns value-prop"></div>
-    <div class="six columns">
-      <form action="/todolist/new/" method=post>
-        <input type="hidden" name="csrfmiddlewaretoken" value="tt9ja170c0SfHqfiCHOAISEPFj3Vy41RLB6VAtRvCBFvWBbv2u65eeMY5BchVi48">
-        <dl>
-          <dd><tr>
-    <th></th>
-    <td>
-      
-      <input type="text" name="description" class="u-full-width" placeholder="Enter your todo" maxlength="128" required id="id_description">
-      
-      
-        
-      
-    </td>
-  </tr>
-          <dt><input type="submit" class="button button-primary" value="Start one now">
-        </dl>
-      </form>
-    </div>
-  </div>
-</section>
-  </div>
-  <!-- End Document
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-</body>
-</html>
+  todoapp-daemonset-ktd8k 
+  apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: "2025-08-15T13:08:17Z"
+  generateName: todoapp-daemonset-
+  generation: 1
+  labels:
+    app: todoapp-daemonset
+    controller-revision-hash: 8644898c47
+    pod-template-generation: "2"
+  name: todoapp-daemonset-ktd8k
+  namespace: mateapp
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: DaemonSet
+    name: todoapp-daemonset
+    uid: 65cf45da-1146-4baf-9473-f2f8f997dc2f
+  resourceVersion: "21153"
+  uid: e95ccbe3-6899-4176-9935-8f2f2723a2e2
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchFields:
+          - key: metadata.name
+            operator: In
+            values:
+            - kind-worker
+  containers:
+  - args:
+    - |
+      while true; do
+        curl -f http://todoapp-svc-cip.mateapp.svc.cluster.local
+        sleep 5
+      done
+    command:
+    - /bin/sh
+    - -c
+    image: ikulyk404/busyboxplus:curl
+    imagePullPolicy: IfNotPresent
+    name: busybox
+    resources:
+      limits:
+        cpu: 200m
+        memory: 256Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-lhz27
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: kind-worker
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+  - effect: NoSchedule
+    key: node.kubernetes.io/disk-pressure
+    operator: Exists
+  - effect: NoSchedule
+    key: node.kubernetes.io/memory-pressure
+    operator: Exists
+  - effect: NoSchedule
+    key: node.kubernetes.io/pid-pressure
+    operator: Exists
+  - effect: NoSchedule
+    key: node.kubernetes.io/unschedulable
+    operator: Exists
+  volumes:
+  - name: kube-api-access-lhz27
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2025-08-15T13:08:19Z"
+    status: "True"
+    type: PodReadyToStartContainers
+  - lastProbeTime: null
+    lastTransitionTime: "2025-08-15T13:08:17Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2025-08-15T13:08:19Z"
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2025-08-15T13:08:19Z"
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2025-08-15T13:08:17Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - allocatedResources:
+      cpu: 100m
+      memory: 128Mi
+    containerID: containerd://74e356aa178737461a5a346bcbf97c7593037eb2213b33b793155d4ef01e2ed0
+    image: docker.io/ikulyk404/busyboxplus:curl
+    imageID: docker.io/ikulyk404/busyboxplus@sha256:1b6d0ed7d7b591da2782b7f2c4d9afae1552ecc522ec07e2d74c5054b8be4b5e
+    lastState: {}
+    name: busybox
+    ready: true
+    resources:
+      limits:
+        cpu: 200m
+        memory: 256Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2025-08-15T13:08:18Z"
+    user:
+      linux:
+        gid: 0
+        supplementalGroups:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+        - 6
+        - 10
+        - 11
+        - 20
+        - 26
+        - 27
+        uid: 0
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-lhz27
+      readOnly: true
+      recursiveReadOnly: Disabled
+  hostIP: 172.18.0.2
+  hostIPs:
+  - ip: 172.18.0.2
+  phase: Running
+  podIP: 10.244.1.13
+  podIPs:
+  - ip: 10.244.1.13
+  qosClass: Burstable
+  startTime: "2025-08-15T13:08:17Z"
 
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
-100  3747  100  3747    0     0  18594      0 --:--:-- --:--:-- --:--:-- 37848
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <!-- Basic Page Needs
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <meta charset="utf-8">
-  <title>Djodolist</title>
-  <meta name="description" content="Small todolist app.">
-  <meta name="author" content="Christian Rotzoll">
-  <!-- Mobile Specific Metas
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <!-- FONT
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link href='http://fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
-  
-  <!-- CSS
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link rel="stylesheet" type='text/css' href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.2/normalize.min.css">;
-  <link rel="stylesheet" type='text/css' href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">;
-  <link rel="stylesheet" type='text/css' href="/static/css/custom.css">
-  
-  <!-- Scripts
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>;
-  <script type="text/javascript" src="/static/js/site.js"></script>
-  
-  <!-- Favicon
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link rel="icon" type="image/png" href="/static/images/favicon.png" />
-</head>
-<body>
-  <!-- Primary Page Layout
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <div class="container">
-    <!-- Navigation
-    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <div class="navbar-spacer"></div>
-    <nav class="navbar">
-      <div class="container">
-        <ul class="navbar-list">
-          <li class="navbar-item"><a class="navbar-link" href="/">Djodolist</a></li>
-          
-          <li class="navbar-item">
-            <a class="navbar-link" href="/auth/login/">Login</a> 
-        </ul>
-      </div>
-    </nav>
-    
-<section class="header">
-  <h2 class="title">Dead simple Todolists.</h2>
-  <div class="row">
-    <div class="three columns value-prop"></div>
-    <div class="six columns">
-      <form action="/todolist/new/" method=post>
-        <input type="hidden" name="csrfmiddlewaretoken" value="35hBP4kAOrDFnW8ItVfFB0OGFcBHMLInpJH6wbrOs8O1QyaSc0dOhebMCoTYggds">
-        <dl>
-          <dd><tr>
-    <th></th>
-    <td>
-      
-      <input type="text" name="description" class="u-full-width" placeholder="Enter your todo" maxlength="128" required id="id_description">
-      
-      
-        
-      
-    </td>
-  </tr>
-          <dt><input type="submit" class="button button-primary" value="Start one now">
-        </dl>
-      </form>
-    </div>
-  </div>
-</section>
-  </div>
-  <!-- End Document
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-</body>
-</html>
-
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
-100  3747  100  3747    0     0  32702      0 --:--:-- --:--:-- --:--:-- 39031
-
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <!-- Basic Page Needs
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <meta charset="utf-8">
-  <title>Djodolist</title>
-  <meta name="description" content="Small todolist app.">
-  <meta name="author" content="Christian Rotzoll">
-  <!-- Mobile Specific Metas
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <!-- FONT
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link href='http://fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
-  
-  <!-- CSS
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link rel="stylesheet" type='text/css' href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.2/normalize.min.css">;
-  <link rel="stylesheet" type='text/css' href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">;
-  <link rel="stylesheet" type='text/css' href="/static/css/custom.css">
-  
-  <!-- Scripts
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>;
-  <script type="text/javascript" src="/static/js/site.js"></script>
-  
-  <!-- Favicon
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link rel="icon" type="image/png" href="/static/images/favicon.png" />
-</head>
-<body>
-  <!-- Primary Page Layout
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <div class="container">
-    <!-- Navigation
-    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <div class="navbar-spacer"></div>
-    <nav class="navbar">
-      <div class="container">
-        <ul class="navbar-list">
-          <li class="navbar-item"><a class="navbar-link" href="/">Djodolist</a></li>
-          
-          <li class="navbar-item">
-            <a class="navbar-link" href="/auth/login/">Login</a> 
-        </ul>
-      </div>
-    </nav>
-    
-<section class="header">
-  <h2 class="title">Dead simple Todolists.</h2>
-  <div class="row">
-    <div class="three columns value-prop"></div>
-    <div class="six columns">
-      <form action="/todolist/new/" method=post>
-        <input type="hidden" name="csrfmiddlewaretoken" value="425gJAwB19fNC28HDIy1Xb8Uj5XXKnPwDiN29Mb4E71O4LXcDp5Lxa4iKHl5WIsC">
-        <dl>
-          <dd><tr>
-    <th></th>
-    <td>
-      
-      <input type="text" name="description" class="u-full-width" placeholder="Enter your todo" maxlength="128" required id="id_description">
-      
-      
-        
-      
-    </td>
-  </tr>
-          <dt><input type="submit" class="button button-primary" value="Start one now">
-        </dl>
-      </form>
-    </div>
-  </div>
-</section>
-  </div>
-  <!-- End Document
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-</body>
-</html>
-
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
-100  3747  100  3747    0     0  18708      0 --:--:-- --:--:-- --:--:-- 37848
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <!-- Basic Page Needs
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <meta charset="utf-8">
-  <title>Djodolist</title>
-  <meta name="description" content="Small todolist app.">
-  <meta name="author" content="Christian Rotzoll">
-  <!-- Mobile Specific Metas
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <!-- FONT
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link href='http://fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
-  
-  <!-- CSS
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link rel="stylesheet" type='text/css' href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.2/normalize.min.css">;
-  <link rel="stylesheet" type='text/css' href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">;
-  <link rel="stylesheet" type='text/css' href="/static/css/custom.css">
-  
-  <!-- Scripts
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>;
-  <script type="text/javascript" src="/static/js/site.js"></script>
-  
-  <!-- Favicon
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link rel="icon" type="image/png" href="/static/images/favicon.png" />
-</head>
-<body>
-  <!-- Primary Page Layout
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <div class="container">
-    <!-- Navigation
-    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <div class="navbar-spacer"></div>
-    <nav class="navbar">
-      <div class="container">
-        <ul class="navbar-list">
-          <li class="navbar-item"><a class="navbar-link" href="/">Djodolist</a></li>
-          
-          <li class="navbar-item">
-            <a class="navbar-link" href="/auth/login/">Login</a> 
-        </ul>
-      </div>
-    </nav>
-    
-<section class="header">
-  <h2 class="title">Dead simple Todolists.</h2>
-  <div class="row">
-    <div class="three columns value-prop"></div>
-    <div class="six columns">
-      <form action="/todolist/new/" method=post>
-        <input type="hidden" name="csrfmiddlewaretoken" value="i98sWpdF3usmFHYLYspP9qY6jt76byGwnfaNkf3QmZqEPK4beBKLLEmO6bLZouf1">
-        <dl>
-          <dd><tr>
-    <th></th>
-    <td>
-      
-      <input type="text" name="description" class="u-full-width" placeholder="Enter your todo" maxlength="128" required id="id_description">
-      
-      
-        
-      
-    </td>
-  </tr>
-          <dt><input type="submit" class="button button-primary" value="Start one now">
-        </dl>
-      </form>
-    </div>
-  </div>
-</section>
-  </div>
-  <!-- End Document
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-</body>
-</html>
-
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
-100  3747  100  3747    0     0  32684      0 --:--:-- --:--:-- --:--:-- 38628
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <!-- Basic Page Needs
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <meta charset="utf-8">
-  <title>Djodolist</title>
-  <meta name="description" content="Small todolist app.">
-  <meta name="author" content="Christian Rotzoll">
-  <!-- Mobile Specific Metas
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <!-- FONT
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link href='http://fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
-  
-  <!-- CSS
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link rel="stylesheet" type='text/css' href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.2/normalize.min.css">;
-  <link rel="stylesheet" type='text/css' href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">;
-  <link rel="stylesheet" type='text/css' href="/static/css/custom.css">
-  
-  <!-- Scripts
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>;
-  <script type="text/javascript" src="/static/js/site.js"></script>
-  
-  <!-- Favicon
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link rel="icon" type="image/png" href="/static/images/favicon.png" />
-</head>
-<body>
-  <!-- Primary Page Layout
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <div class="container">
-    <!-- Navigation
-    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <div class="navbar-spacer"></div>
-    <nav class="navbar">
-      <div class="container">
-        <ul class="navbar-list">
-          <li class="navbar-item"><a class="navbar-link" href="/">Djodolist</a></li>
-          
-          <li class="navbar-item">
-            <a class="navbar-link" href="/auth/login/">Login</a> 
-        </ul>
-      </div>
-    </nav>
-    
-<section class="header">
-  <h2 class="title">Dead simple Todolists.</h2>
-  <div class="row">
-    <div class="three columns value-prop"></div>
-    <div class="six columns">
-      <form action="/todolist/new/" method=post>
-        <input type="hidden" name="csrfmiddlewaretoken" value="msytoSpFJJI3ObwNNtkgNsdE4goqp19m96yyn1d14DAoUCNFlNlbAOU114l66jAe">
-        <dl>
-          <dd><tr>
-    <th></th>
-    <td>
-      
-      <input type="text" name="description" class="u-full-width" placeholder="Enter your todo" maxlength="128" required id="id_description">
-      
-      
-        
-      
-    </td>
-  </tr>
-          <dt><input type="submit" class="button button-primary" value="Start one now">
-        </dl>
-      </form>
-    </div>
-  </div>
-</section>
-  </div>
-  <!-- End Document
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-</body>
-</html>
-
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
-100  3747  100  3747    0     0  30028      0 --:--:-- --:--:-- --:--:--  121k
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <!-- Basic Page Needs
-
-
-  Fri Aug 15 13:16:00 UTC 2025
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
-100     9  100     9    0     0    227      0 --:--:-- --:--:-- --:--:--   450
-Health OK
+  todoapp-cronjob-29254396-qx42r
+  apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: "2025-08-15T13:16:00Z"
+  generateName: todoapp-cronjob-29254396-
+  generation: 1
+  labels:
+    batch.kubernetes.io/controller-uid: ea804196-31ec-4bd6-a0d1-202e258cc363
+    batch.kubernetes.io/job-name: todoapp-cronjob-29254396
+    controller-uid: ea804196-31ec-4bd6-a0d1-202e258cc363
+    job-name: todoapp-cronjob-29254396
+  name: todoapp-cronjob-29254396-qx42r
+  namespace: mateapp
+  ownerReferences:
+  - apiVersion: batch/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: Job
+    name: todoapp-cronjob-29254396
+    uid: ea804196-31ec-4bd6-a0d1-202e258cc363
+  resourceVersion: "21918"
+  uid: 5f995a32-8bd8-4014-8ee4-c5990c9f8601
+spec:
+  containers:
+  - command:
+    - /bin/sh
+    - -c
+    - date; curl http://todoapp-svc-cip.mateapp.svc.cluster.local/api/health
+    image: ikulyk404/busyboxplus:curl
+    imagePullPolicy: IfNotPresent
+    name: busybox
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-rhlc6
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: kind-worker2
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: OnFailure
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - name: kube-api-access-rhlc6
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2025-08-15T13:16:02Z"
+    status: "False"
+    type: PodReadyToStartContainers
+  - lastProbeTime: null
+    lastTransitionTime: "2025-08-15T13:16:00Z"
+    reason: PodCompleted
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2025-08-15T13:16:00Z"
+    reason: PodCompleted
+    status: "False"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2025-08-15T13:16:00Z"
+    reason: PodCompleted
+    status: "False"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2025-08-15T13:16:00Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: containerd://3bdbff89d2be7376d8d606ac8784f608d47c3bc9125bcf52f8eee4a31563f157
+    image: docker.io/ikulyk404/busyboxplus:curl
+    imageID: docker.io/ikulyk404/busyboxplus@sha256:1b6d0ed7d7b591da2782b7f2c4d9afae1552ecc522ec07e2d74c5054b8be4b5e
+    lastState: {}
+    name: busybox
+    ready: false
+    resources: {}
+    restartCount: 0
+    started: false
+    state:
+      terminated:
+        containerID: containerd://3bdbff89d2be7376d8d606ac8784f608d47c3bc9125bcf52f8eee4a31563f157
+        exitCode: 0
+        finishedAt: "2025-08-15T13:16:00Z"
+        reason: Completed
+        startedAt: "2025-08-15T13:16:00Z"
+    user:
+      linux:
+        gid: 0
+        supplementalGroups:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+        - 6
+        - 10
+        - 11
+        - 20
+        - 26
+        - 27
+        uid: 0
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-rhlc6
+      readOnly: true
+      recursiveReadOnly: Disabled
+  hostIP: 172.18.0.3
+  hostIPs:
+  - ip: 172.18.0.3
+  phase: Succeeded
+  podIP: 10.244.2.17
+  podIPs:
+  - ip: 10.244.2.17
+  qosClass: BestEffort
+  startTime: "2025-08-15T13:16:00Z"
